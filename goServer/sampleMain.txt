@@ -1,0 +1,174 @@
+// package main
+
+// import (
+// 	"bytes"
+// 	"encoding/json"
+// 	"fmt"
+// 	"io/ioutil"
+// 	"log"
+// 	"net/http"
+// )
+
+// type PostData struct {
+// 	ID     int    `json:"id"`
+// 	Title  string `json:"title"`
+// 	Body   string `json:"body"`
+// }
+
+// func main() {
+// ///////////////////////////////////////////////////////////
+// http.HandleFunc("/api/go-test", ReadPostHandler)
+// http.HandleFunc("/api/create-post", CreatePostHandler)
+// 	// http.HandleFunc("/api/update", UpdatePostHandler)
+// 	// http.HandleFunc("/api/delete", DeletePostHandler)
+// 	fmt.Println("Server started on :8080")
+// 	http.ListenAndServe(":8080", nil)
+// }
+
+// ///////////////////////////////////////////////////////////
+
+// func CreatePostHandler(w http.ResponseWriter, r *http.Request) {
+// 	log.Printf("Received request: %s\n", r.URL.Path)
+
+// 	w.Header().Set("Access-Control-Allow-Origin", "*")
+// 	w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+// 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+
+// 	if r.Method == http.MethodOptions {
+// 		w.WriteHeader(http.StatusOK)
+// 		return
+// 	}
+
+// 	if r.Method != http.MethodPost {
+// 		http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
+// 		return
+// 	}
+
+// 	var post PostData
+// 	err := json.NewDecoder(r.Body).Decode(&post)
+// 	if err != nil {
+// 		http.Error(w, fmt.Sprintf("Failed to decode post: %v", err), http.StatusBadRequest)
+// 		return
+// 	}
+
+// 	// Forward the POST request to the mock API
+// 	mockAPIURL := "https://662e647da7dda1fa378cd378.mockapi.io/api/v1/go-test"
+// 	postBody, err := json.Marshal(post)
+// 	if err != nil {
+// 		http.Error(w, fmt.Sprintf("Failed to marshal post: %v", err), http.StatusInternalServerError)
+// 		return
+// 	}
+
+// 	log.Printf("Received request: %s\n", postBody)
+
+// 	resp, err := http.Post(mockAPIURL, "application/json", bytes.NewBuffer(postBody))
+// 	if err != nil {
+// 		http.Error(w, fmt.Sprintf("Failed to forward post to mock API: %v", err), http.StatusInternalServerError)
+// 		return
+// 	}
+// 	defer resp.Body.Close()
+
+// 	body, err := ioutil.ReadAll(resp.Body)
+// 	if err != nil {
+// 		http.Error(w, fmt.Sprintf("Failed to read mock API response: %v", err), http.StatusInternalServerError)
+// 		return
+// 	}
+
+// 	w.Header().Set("Content-Type", "application/json")
+// 	w.WriteHeader(resp.StatusCode)
+// 	w.Write(body)
+// }
+
+// //////////////////////////////////////////////////////////
+
+// //////////////////////////////////////////////////////////
+
+// func GetPost() ([]byte, error) {
+// 	// resp, err := http.Get("https://jsonplaceholder.typicode.com/posts")
+// 	// resp, err := http.Get("https://sample-go.free.beeceptor.com/posts")
+// 	resp, err := http.Get("https://662e647da7dda1fa378cd378.mockapi.io/api/v1/go-test")
+// 	if err!= nil {
+// 		return nil, err
+// 	}
+// 	defer resp.Body.Close()
+
+// 	body, err := ioutil.ReadAll(resp.Body)
+// 	if err!= nil {
+// 		return nil, err
+// 	}
+
+// 	return body, nil
+// }
+
+// func ReadPostHandler(w http.ResponseWriter, r *http.Request) {
+// 	log.Printf("Received request: %s\n", r.URL.Path)
+
+// 	// Set CORS headers
+// 	w.Header().Set("Access-Control-Allow-Origin", "*")
+// 	w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+// 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+
+// 	if r.Method == http.MethodOptions {
+// 		w.WriteHeader(http.StatusOK)
+// 		return
+// 	}
+
+// 	getResp, err := GetPost()
+// 	if err != nil {
+// 		http.Error(w, fmt.Sprintf("Failed to get post: %v", err), http.StatusInternalServerError)
+// 		return
+// 	}
+
+// 	w.Header().Set("Content-Type", "application/json")
+// 	w.WriteHeader(http.StatusOK)
+// 	w.Write(getResp)
+// }
+
+// // Call your ReadPost function here
+
+// //////////////////////////////////////////////////////
+
+// // func GetPost() ([]byte, error) {
+// // 	// resp, err := http.Get("https://jsonplaceholder.typicode.com/posts")
+// // 	// resp, err := http.Get("https://sample-go.free.beeceptor.com/posts")
+// // 	resp, err := http.Get("https://662e647da7dda1fa378cd378.mockapi.io/api/v1/go-test")
+// // 	if err!= nil {
+// // 		return nil, err
+// // 	}
+// // 	defer resp.Body.Close()
+
+// // 	body, err := ioutil.ReadAll(resp.Body)
+// // 	if err!= nil {
+// // 		return nil, err
+// // 	}
+
+// // 	return body, nil
+// // }
+
+// 	// // // Prepare data for Post request
+// 	// postData := PostData{
+// 	// 	ID: 3,
+// 	// 	Title: "Get API Documentation",
+// 	// 	Body: "Use the GET API to fetch all objects stored for this route. The response will be a JSON Array containing a list of previously created objects. If no objects exist under this CRUD route, an empty array [] is returned, indicating a successful operation.",
+// 	// 	UserID: 2,
+// 	// }
+// 	// // Perform a Post Request
+// 	// err := CreatePost(postData)
+// 	// if err != nil {
+// 	// log.Fatalf("Create post failed: %v", err)
+// 	// }
+// 	// fmt.Println("Post Request created successfully")
+
+// 	//////////////////////////////////////////////////////
+
+// 	// delete post
+// 	// 	idToDelete := 1
+// 	// 	err := DeletePost(idToDelete)
+// 	// 	if err!= nil {
+// 	// 		fmt.Println("Error deleting resource:", err)
+// 	// 		return
+// 	// 	}
+// 	// fmt.Println("Resource deleted successfully.")
+// 	//////////////////////////////////////////////////////
+
+// 	// update post
